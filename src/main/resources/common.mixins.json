@@ -3,7 +3,8 @@
   "package": "one.oktw.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "ClientConnectionMixin"
+    "ClientConnectionMixin",
+    "ServerConfigHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

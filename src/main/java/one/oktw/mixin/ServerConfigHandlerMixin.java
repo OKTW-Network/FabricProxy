@@ -1,4 +1,4 @@
-package one.oktw.mixin.bungee;
+package one.oktw.mixin;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerConfigHandler;
