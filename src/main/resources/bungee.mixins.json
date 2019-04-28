@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "one.oktw.mixin.bungee",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "HandshakeC2SPacketMixin",
+    "ServerConfigHandlerMixin",
+    "ServerHandshakeNetworkHandlerMixin",
+    "ServerLoginNetworkHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

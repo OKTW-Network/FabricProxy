@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "one.oktw.mixin.velocity",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "LoginQueryRequestS2CPacketMixin",
+    "LoginQueryResponseC2SPacketMixin",
+    "ServerLoginNetworkHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

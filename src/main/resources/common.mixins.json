@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "one.oktw.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ClientConnectionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
