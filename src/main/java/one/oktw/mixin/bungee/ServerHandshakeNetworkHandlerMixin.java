@@ -6,9 +6,9 @@ import com.mojang.util.UUIDTypeAdapter;
 import net.minecraft.client.network.packet.LoginDisconnectS2CPacket;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkState;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.network.ServerHandshakeNetworkHandler;
 import net.minecraft.server.network.packet.HandshakeC2SPacket;
-import net.minecraft.text.StringTextComponent;
 import one.oktw.interfaces.IClientConnection;
 import one.oktw.interfaces.IHandshakeC2SPacket;
 import org.spongepowered.asm.mixin.Final;
@@ -37,7 +37,7 @@ public class ServerHandshakeNetworkHandlerMixin {
                 ((IClientConnection) client).setRemoteAddress(new java.net.InetSocketAddress(split[1], ((java.net.InetSocketAddress) client.getAddress()).getPort()));
                 ((IClientConnection) client).setSpoofedUUID(UUIDTypeAdapter.fromString(split[2]));
             } else {
-                StringTextComponent disconnectMessage = new StringTextComponent("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
+                TextComponent disconnectMessage = new TextComponent("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
                 client.send(new LoginDisconnectS2CPacket(disconnectMessage));
                 client.disconnect(disconnectMessage);
                 return;

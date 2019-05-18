@@ -3,11 +3,11 @@ package one.oktw.mixin.velocity;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.network.packet.LoginQueryRequestS2CPacket;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.server.network.packet.LoginHelloC2SPacket;
 import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
-import net.minecraft.text.StringTextComponent;
-import net.minecraft.text.TextComponent;
 import net.minecraft.util.PacketByteBuf;
 import one.oktw.FabricProxy;
 import one.oktw.VelocityProxy;
@@ -37,7 +37,7 @@ public abstract class ServerLoginNetworkHandlerMixin {
     public abstract void method_14384();
 
     @Shadow
-    public abstract void disconnect(TextComponent textComponent_1);
+    public abstract void disconnect(Component component_1);
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "onHello", at = @At(value = "FIELD", ordinal = 2, target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;state:Lnet/minecraft/server/network/ServerLoginNetworkHandler$State;"), cancellable = true)
@@ -59,12 +59,12 @@ public abstract class ServerLoginNetworkHandlerMixin {
         if (FabricProxy.config.getVelocity() && ((ILoginQueryResponseC2SPacket) packet).getQueryId() == velocityLoginQueryId) {
             PacketByteBuf buf = ((ILoginQueryResponseC2SPacket) packet).getResponse();
             if (buf == null) {
-                disconnect(new StringTextComponent("This server requires you to connect with Velocity."));
+                disconnect(new TextComponent("This server requires you to connect with Velocity."));
                 return;
             }
 
             if (!VelocityProxy.checkIntegrity(buf)) {
-                disconnect(new StringTextComponent("Unable to verify player details"));
+                disconnect(new TextComponent("Unable to verify player details"));
                 return;
             }
 
