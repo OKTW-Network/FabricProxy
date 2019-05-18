@@ -14,14 +14,29 @@ public class ModConfig implements ConfigData {
     private String secret = "";
 
     public Boolean getVelocity() {
-        return Velocity;
+        String env = System.getenv("FABRIC_PROXY_VELOCITY");
+        if (env == null) {
+            return Velocity;
+        } else {
+            return env.equalsIgnoreCase("true");
+        }
     }
 
     public Boolean getBungeeCord() {
-        return BungeeCord;
+        String env = System.getenv("FABRIC_PROXY_BUNGEECORD");
+        if (env == null) {
+            return BungeeCord;
+        } else {
+            return env.equalsIgnoreCase("true");
+        }
     }
 
     public String getSecret() {
-        return secret;
+        String env = System.getenv("FABRIC_PROXY_SECRET");
+        if (env == null) {
+            return secret;
+        } else {
+            return env;
+        }
     }
 }
