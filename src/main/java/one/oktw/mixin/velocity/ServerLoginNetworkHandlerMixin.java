@@ -3,11 +3,11 @@ package one.oktw.mixin.velocity;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.network.packet.LoginQueryRequestS2CPacket;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.server.network.packet.LoginHelloC2SPacket;
 import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.PacketByteBuf;
 import one.oktw.FabricProxy;
 import one.oktw.VelocityProxy;
@@ -34,10 +34,10 @@ public abstract class ServerLoginNetworkHandlerMixin {
     private GameProfile profile;
 
     @Shadow
-    public abstract void method_14384();
+    public abstract void acceptPlayer();
 
     @Shadow
-    public abstract void disconnect(Component component_1);
+    public abstract void disconnect(Text text);
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "onHello", at = @At(value = "FIELD", ordinal = 2, target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;state:Lnet/minecraft/server/network/ServerLoginNetworkHandler$State;"), cancellable = true)
@@ -59,12 +59,12 @@ public abstract class ServerLoginNetworkHandlerMixin {
         if (FabricProxy.config.getVelocity() && ((ILoginQueryResponseC2SPacket) packet).getQueryId() == velocityLoginQueryId) {
             PacketByteBuf buf = ((ILoginQueryResponseC2SPacket) packet).getResponse();
             if (buf == null) {
-                disconnect(new TextComponent("This server requires you to connect with Velocity."));
+                disconnect(new LiteralText("This server requires you to connect with Velocity."));
                 return;
             }
 
             if (!VelocityProxy.checkIntegrity(buf)) {
-                disconnect(new TextComponent("Unable to verify player details"));
+                disconnect(new LiteralText("Unable to verify player details"));
                 return;
             }
 
@@ -81,7 +81,7 @@ public abstract class ServerLoginNetworkHandlerMixin {
     private void login(CallbackInfo ci) {
         if (ready) {
             ready = false;
-            method_14384();
+            acceptPlayer();
         }
     }
 }
