@@ -3,6 +3,7 @@ package one.oktw.mixin.velocity;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.network.packet.LoginQueryRequestS2CPacket;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.server.network.packet.LoginHelloC2SPacket;
 import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
@@ -19,6 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
@@ -38,6 +40,15 @@ public abstract class ServerLoginNetworkHandlerMixin {
 
     @Shadow
     public abstract void disconnect(Text text);
+
+    @Redirect(method = "onHello", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isOnlineMode()Z"))
+    private boolean hackOnlineMode(MinecraftServer minecraftServer) {
+        if (FabricProxy.config.getVelocity()) {
+            return false;
+        } else {
+            return minecraftServer.isOnlineMode();
+        }
+    }
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "onHello", at = @At(value = "FIELD", ordinal = 2, target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;state:Lnet/minecraft/server/network/ServerLoginNetworkHandler$State;"), cancellable = true)
