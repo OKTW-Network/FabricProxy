@@ -31,7 +31,7 @@ public class ServerHandshakeNetworkHandlerMixin {
 
     @Inject(method = "onHandshake", at = @At(value = "HEAD"), cancellable = true)
     private void onProcessHandshakeStart(HandshakeC2SPacket packet, CallbackInfo ci) {
-        if (config.getBungeeCord() && packet.getIntendedState().equals(NetworkState.field_11688)) { // NetworkState.LOGIN
+        if (config.getBungeeCord() && packet.getIntendedState().equals(NetworkState.LOGIN)) {
             String[] split = ((IHandshakeC2SPacket) packet).getAddress().split("\00");
             if (split.length == 3 || split.length == 4) {
                 ((IHandshakeC2SPacket) packet).setAddress(split[0]);
