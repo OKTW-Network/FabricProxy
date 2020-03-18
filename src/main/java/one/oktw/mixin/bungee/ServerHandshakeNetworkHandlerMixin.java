@@ -3,11 +3,11 @@ package one.oktw.mixin.bungee;
 import com.google.gson.Gson;
 import com.mojang.authlib.properties.Property;
 import com.mojang.util.UUIDTypeAdapter;
-import net.minecraft.client.network.packet.LoginDisconnectS2CPacket;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkState;
+import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
+import net.minecraft.network.packet.s2c.login.LoginDisconnectS2CPacket;
 import net.minecraft.server.network.ServerHandshakeNetworkHandler;
-import net.minecraft.server.network.packet.HandshakeC2SPacket;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import one.oktw.interfaces.IClientConnection;
@@ -27,7 +27,7 @@ public class ServerHandshakeNetworkHandlerMixin {
 
     @Shadow
     @Final
-    private ClientConnection client;
+    private ClientConnection connection;
 
     @Inject(method = "onHandshake", at = @At(value = "HEAD"), cancellable = true)
     private void onProcessHandshakeStart(HandshakeC2SPacket packet, CallbackInfo ci) {
@@ -35,16 +35,16 @@ public class ServerHandshakeNetworkHandlerMixin {
             String[] split = ((IHandshakeC2SPacket) packet).getAddress().split("\00");
             if (split.length == 3 || split.length == 4) {
                 ((IHandshakeC2SPacket) packet).setAddress(split[0]);
-                ((IClientConnection) client).setRemoteAddress(new java.net.InetSocketAddress(split[1], ((java.net.InetSocketAddress) client.getAddress()).getPort()));
-                ((IClientConnection) client).setSpoofedUUID(UUIDTypeAdapter.fromString(split[2]));
+                ((IClientConnection) connection).setRemoteAddress(new java.net.InetSocketAddress(split[1], ((java.net.InetSocketAddress) connection.getAddress()).getPort()));
+                ((IClientConnection) connection).setSpoofedUUID(UUIDTypeAdapter.fromString(split[2]));
             } else {
                 Text disconnectMessage = new LiteralText("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
-                client.send(new LoginDisconnectS2CPacket(disconnectMessage));
-                client.disconnect(disconnectMessage);
+                connection.send(new LoginDisconnectS2CPacket(disconnectMessage));
+                connection.disconnect(disconnectMessage);
                 return;
             }
             if (split.length == 4) {
-                ((IClientConnection) client).setSpoofedProfile(gson.fromJson(split[3], Property[].class));
+                ((IClientConnection) connection).setSpoofedProfile(gson.fromJson(split[3], Property[].class));
             }
         }
     }

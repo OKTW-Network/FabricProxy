@@ -21,7 +21,7 @@ import java.util.UUID;
 public abstract class ServerLoginNetworkHandlerMixin {
     @Shadow
     @Final
-    public ClientConnection client;
+    public ClientConnection connection;
     @Shadow
     @Final
     private MinecraftServer server;
@@ -33,16 +33,16 @@ public abstract class ServerLoginNetworkHandlerMixin {
     private void initUuid(CallbackInfo ci) {
         if (!this.server.isOnlineMode()) {
             UUID uuid;
-            if (((IClientConnection) client).getSpoofedUUID() != null) {
-                uuid = ((IClientConnection) client).getSpoofedUUID();
+            if (((IClientConnection) connection).getSpoofedUUID() != null) {
+                uuid = ((IClientConnection) connection).getSpoofedUUID();
             } else {
                 uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + this.profile.getName()).getBytes(Charsets.UTF_8));
             }
 
             this.profile = new GameProfile(uuid, this.profile.getName());
 
-            if (((IClientConnection) client).getSpoofedProfile() != null) {
-                for (Property property : ((IClientConnection) client).getSpoofedProfile()) {
+            if (((IClientConnection) connection).getSpoofedProfile() != null) {
+                for (Property property : ((IClientConnection) connection).getSpoofedProfile()) {
                     this.profile.getProperties().put(property.getName(), property);
                 }
             }

@@ -1,6 +1,6 @@
 package one.oktw.mixin.velocity;
 
-import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
+import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 import net.minecraft.util.PacketByteBuf;
 import one.oktw.interfaces.ILoginQueryResponseC2SPacket;
 import org.spongepowered.asm.mixin.Mixin;

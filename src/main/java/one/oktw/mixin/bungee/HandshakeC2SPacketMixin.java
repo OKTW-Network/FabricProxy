@@ -1,6 +1,6 @@
 package one.oktw.mixin.bungee;
 
-import net.minecraft.server.network.packet.HandshakeC2SPacket;
+import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 import net.minecraft.util.PacketByteBuf;
 import one.oktw.FabricProxy;
 import one.oktw.interfaces.IHandshakeC2SPacket;

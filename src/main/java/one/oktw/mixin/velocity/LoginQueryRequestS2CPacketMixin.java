@@ -1,8 +1,8 @@
 package one.oktw.mixin.velocity;
 
-import net.minecraft.client.network.packet.LoginQueryRequestS2CPacket;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientLoginPacketListener;
+import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import one.oktw.interfaces.ILoginQueryRequestS2CPacket;
