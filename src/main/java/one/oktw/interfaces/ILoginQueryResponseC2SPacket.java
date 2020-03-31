@@ -1,6 +1,6 @@
 package one.oktw.interfaces;
 
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 
 public interface ILoginQueryResponseC2SPacket {
     int getQueryId();

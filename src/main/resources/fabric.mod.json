@@ -23,11 +23,8 @@
     "bungee.mixins.json",
     "velocity.mixins.json"
   ],
-  "requires": {
-    "fabricloader": ">=0.4.0",
-    "fabric": "*"
+  "depends": {
+    "fabricloader": ">=0.4.0"
   },
-  "suggests": {
-    "flamingo": "*"
-  }
+  "suggests": {}
 }

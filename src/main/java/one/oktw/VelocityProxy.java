@@ -3,8 +3,8 @@ package one.oktw;
 import com.google.common.net.InetAddresses;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

@@ -1,7 +1,6 @@
 package one.oktw.mixin;
 
 import com.mojang.authlib.properties.Property;
-import io.netty.channel.SimpleChannelInboundHandler;
 import net.minecraft.network.ClientConnection;
 import one.oktw.interfaces.IClientConnection;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +10,7 @@ import java.net.SocketAddress;
 import java.util.UUID;
 
 @Mixin(ClientConnection.class)
-public abstract class ClientConnectionMixin extends SimpleChannelInboundHandler implements IClientConnection {
+public abstract class ClientConnectionMixin implements IClientConnection {
     @Shadow
     private SocketAddress address;
     private UUID spoofedUUID;

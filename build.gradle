@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.4.18'
+	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -12,7 +12,6 @@ group = project.maven_group
 
 repositories {
 	mavenCentral()
-	maven { url = 'http://maven.sargunv.s3-website-us-west-2.amazonaws.com/' }
 }
 
 minecraft {

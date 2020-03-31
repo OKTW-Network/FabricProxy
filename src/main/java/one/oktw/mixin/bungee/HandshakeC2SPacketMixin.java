@@ -1,7 +1,7 @@
 package one.oktw.mixin.bungee;
 
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
-import net.minecraft.util.PacketByteBuf;
 import one.oktw.FabricProxy;
 import one.oktw.interfaces.IHandshakeC2SPacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +14,7 @@ public abstract class HandshakeC2SPacketMixin implements IHandshakeC2SPacket {
     @Shadow
     private String address;
 
-    @Redirect(method = "read", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;readString(I)Ljava/lang/String;"))
+    @Redirect(method = "read", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;readString(I)Ljava/lang/String;"))
     private String onReadPacketData(PacketByteBuf buf, int int_1) {
         if (!FabricProxy.config.getBungeeCord()) {
             return buf.readString(255);

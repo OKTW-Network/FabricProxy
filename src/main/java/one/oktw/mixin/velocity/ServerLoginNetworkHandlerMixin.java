@@ -2,6 +2,7 @@ package one.oktw.mixin.velocity;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
@@ -9,7 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.PacketByteBuf;
 import one.oktw.FabricProxy;
 import one.oktw.VelocityProxy;
 import one.oktw.interfaces.IClientConnection;
