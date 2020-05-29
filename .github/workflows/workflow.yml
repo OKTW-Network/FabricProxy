@@ -15,6 +15,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
+      
+      - name: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle
+            .gradle/loom-cache
+          key: caches-${{ hashFiles('~/.gradle', '.gradle/loom-cache') }}
+          restore-keys: |
+            caches-
 
       - name: Build
         run: ./gradlew build
