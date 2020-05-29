@@ -1,0 +1,26 @@
+name: FabricProxy Actions
+on: [push, pull_request]
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Validation
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Upload-Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: Artifact
+          path: build/libs
