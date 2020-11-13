@@ -23,11 +23,15 @@ import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
 
 @Mixin(ServerLoginNetworkHandler.class)
 public abstract class ServerLoginNetworkHandlerMixin {
+    private int velocityLoginQueryId = -1;
+    private boolean ready = false;
+    private boolean bypassProxy = false;
+    private LoginHelloC2SPacket loginPacket;
+
     @Shadow
     @Final
     public ClientConnection connection;
-    private int velocityLoginQueryId = -1;
-    private boolean ready = false;
+
     @Shadow
     private GameProfile profile;
 
@@ -37,12 +41,18 @@ public abstract class ServerLoginNetworkHandlerMixin {
     @Shadow
     public abstract void disconnect(Text text);
 
+    @Shadow
+    public abstract void onHello(LoginHelloC2SPacket loginHelloC2SPacket);
+
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "onHello",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/c2s/login/LoginHelloC2SPacket;getProfile()Lcom/mojang/authlib/GameProfile;"),
             cancellable = true)
-    private void sendVelocityPacket(LoginHelloC2SPacket loginHelloC2SPacket_1, CallbackInfo ci) {
-        if (FabricProxy.config.getVelocity()) {
+    private void sendVelocityPacket(LoginHelloC2SPacket loginHelloC2SPacket, CallbackInfo ci) {
+        if (FabricProxy.config.getVelocity() && !bypassProxy) {
+            if (FabricProxy.config.getAllowBypassProxy()) {
+                loginPacket = loginHelloC2SPacket;
+            }
             this.velocityLoginQueryId = java.util.concurrent.ThreadLocalRandom.current().nextInt();
             LoginQueryRequestS2CPacket packet = new LoginQueryRequestS2CPacket();
             ((LoginQueryRequestS2CPacketAccessor) packet).setQueryId(velocityLoginQueryId);
@@ -59,7 +69,14 @@ public abstract class ServerLoginNetworkHandlerMixin {
         if (FabricProxy.config.getVelocity() && ((LoginQueryResponseC2SPacketAccessor) packet).getQueryId() == velocityLoginQueryId) {
             PacketByteBuf buf = ((LoginQueryResponseC2SPacketAccessor) packet).getResponse();
             if (buf == null) {
-                disconnect(new LiteralText("This server requires you to connect with Velocity."));
+                if (!FabricProxy.config.getAllowBypassProxy()) {
+                    disconnect(new LiteralText("This server requires you to connect with Velocity."));
+                    return;
+                }
+
+                bypassProxy = true;
+                onHello(loginPacket);
+                ci.cancel();
                 return;
             }
 

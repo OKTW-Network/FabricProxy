@@ -1,6 +1,5 @@
 package one.oktw.mixin.bungee;
 
-import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.network.ClientConnection;
@@ -17,10 +16,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.UUID;
-
 @Mixin(ServerLoginNetworkHandler.class)
 public abstract class ServerLoginNetworkHandlerMixin {
+    private boolean bypassProxy = false;
     @Shadow
     @Final
     public ClientConnection connection;
@@ -30,14 +28,12 @@ public abstract class ServerLoginNetworkHandlerMixin {
     @Inject(method = "onHello", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;profile:Lcom/mojang/authlib/GameProfile;", shift = At.Shift.AFTER))
     private void initUuid(CallbackInfo ci) {
         if (FabricProxy.config.getBungeeCord()) {
-            UUID uuid;
-            if (((BungeeClientConnection) connection).getSpoofedUUID() != null) {
-                uuid = ((BungeeClientConnection) connection).getSpoofedUUID();
-            } else {
-                uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + this.profile.getName()).getBytes(Charsets.UTF_8));
+            if (((BungeeClientConnection) connection).getSpoofedUUID() == null) {
+                bypassProxy = true;
+                return;
             }
 
-            this.profile = new GameProfile(uuid, this.profile.getName());
+            this.profile = new GameProfile(((BungeeClientConnection) connection).getSpoofedUUID(), this.profile.getName());
 
             if (((BungeeClientConnection) connection).getSpoofedProfile() != null) {
                 for (Property property : ((BungeeClientConnection) connection).getSpoofedProfile()) {
@@ -49,6 +45,6 @@ public abstract class ServerLoginNetworkHandlerMixin {
 
     @Redirect(method = "onHello", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isOnlineMode()Z"))
     private boolean skipKeyPacket(MinecraftServer minecraftServer) {
-        return !FabricProxy.config.getBungeeCord() && minecraftServer.isOnlineMode();
+        return (bypassProxy || !FabricProxy.config.getBungeeCord()) && minecraftServer.isOnlineMode();
     }
 }

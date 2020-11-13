@@ -41,9 +41,11 @@ public class ServerHandshakeNetworkHandlerMixin {
                     ((BungeeClientConnection) connection).setSpoofedProfile(gson.fromJson(split[3], Property[].class));
                 }
             } else {
-                Text disconnectMessage = new LiteralText("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
-                connection.send(new LoginDisconnectS2CPacket(disconnectMessage));
-                connection.disconnect(disconnectMessage);
+                if (!config.getAllowBypassProxy()) {
+                    Text disconnectMessage = new LiteralText("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
+                    connection.send(new LoginDisconnectS2CPacket(disconnectMessage));
+                    connection.disconnect(disconnectMessage);
+                }
             }
         }
     }
