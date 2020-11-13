@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -25,8 +25,8 @@ dependencies {
 	modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 	modApi "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	//modApi "net.fabricmc:fabric:${project.fabric_version}"
+	// API
+	modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
 }
 

@@ -6,13 +6,15 @@ import com.mojang.authlib.properties.Property;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
-import one.oktw.interfaces.IClientConnection;
+import one.oktw.FabricProxy;
+import one.oktw.interfaces.BungeeClientConnection;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
@@ -23,29 +25,30 @@ public abstract class ServerLoginNetworkHandlerMixin {
     @Final
     public ClientConnection connection;
     @Shadow
-    @Final
-    private MinecraftServer server;
-    @Shadow
     private GameProfile profile;
 
-    @Inject(method = "onHello", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, ordinal = 0, shift = At.Shift.AFTER,
-            target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;profile:Lcom/mojang/authlib/GameProfile;"))
+    @Inject(method = "onHello", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;profile:Lcom/mojang/authlib/GameProfile;", shift = At.Shift.AFTER))
     private void initUuid(CallbackInfo ci) {
-        if (!this.server.isOnlineMode()) {
+        if (FabricProxy.config.getBungeeCord()) {
             UUID uuid;
-            if (((IClientConnection) connection).getSpoofedUUID() != null) {
-                uuid = ((IClientConnection) connection).getSpoofedUUID();
+            if (((BungeeClientConnection) connection).getSpoofedUUID() != null) {
+                uuid = ((BungeeClientConnection) connection).getSpoofedUUID();
             } else {
                 uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + this.profile.getName()).getBytes(Charsets.UTF_8));
             }
 
             this.profile = new GameProfile(uuid, this.profile.getName());
 
-            if (((IClientConnection) connection).getSpoofedProfile() != null) {
-                for (Property property : ((IClientConnection) connection).getSpoofedProfile()) {
+            if (((BungeeClientConnection) connection).getSpoofedProfile() != null) {
+                for (Property property : ((BungeeClientConnection) connection).getSpoofedProfile()) {
                     this.profile.getProperties().put(property.getName(), property);
                 }
             }
         }
+    }
+
+    @Redirect(method = "onHello", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isOnlineMode()Z"))
+    private boolean skipKeyPacket(MinecraftServer minecraftServer) {
+        return !FabricProxy.config.getBungeeCord() && minecraftServer.isOnlineMode();
     }
 }

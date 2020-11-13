@@ -13,7 +13,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class VelocityProxy {
+public class VelocityLib {
     public static final Identifier PLAYER_INFO_CHANNEL = new Identifier("velocity", "player_info");
     private static final int SUPPORTED_FORWARDING_VERSION = 1;
 

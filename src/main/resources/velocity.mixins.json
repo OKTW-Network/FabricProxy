@@ -2,9 +2,10 @@
   "required": true,
   "package": "one.oktw.mixin.velocity",
   "compatibilityLevel": "JAVA_8",
+  "plugin": "one.oktw.FabricProxy",
   "mixins": [
-    "LoginQueryRequestS2CPacketMixin",
-    "LoginQueryResponseC2SPacketMixin",
+    "LoginQueryRequestS2CPacketAccessor",
+    "LoginQueryResponseC2SPacketAccessor",
     "ServerLoginNetworkHandlerMixin"
   ],
   "injectors": {

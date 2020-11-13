@@ -2,7 +2,10 @@
   "required": true,
   "package": "one.oktw.mixin.bungee",
   "compatibilityLevel": "JAVA_8",
+  "plugin": "one.oktw.FabricProxy",
   "mixins": [
+    "ClientConnectionMixin",
+    "HandshakeC2SPacketAccessor",
     "HandshakeC2SPacketMixin",
     "ServerHandshakeNetworkHandlerMixin",
     "ServerLoginNetworkHandlerMixin"
