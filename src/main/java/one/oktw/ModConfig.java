@@ -7,8 +7,8 @@ import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Comment;
 @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 @Config(name = "FabricProxy")
 public class ModConfig implements ConfigData {
-    private Boolean BungeeCord = true;
-    private Boolean Velocity = true;
+    private Boolean BungeeCord = false;
+    private Boolean Velocity = false;
     private Boolean allowBypassProxy = false;
 
     @Comment("Velocity proxy secret")
