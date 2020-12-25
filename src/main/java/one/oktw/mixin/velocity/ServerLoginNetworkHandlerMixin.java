@@ -27,7 +27,7 @@ import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
 public abstract class ServerLoginNetworkHandlerMixin {
     private int velocityLoginQueryId = -1;
     private boolean ready = false;
-    private boolean bypassProxy = false;
+    private boolean bypassProxyVelocity = false;
     private LoginHelloC2SPacket loginPacket;
 
     @Shadow
@@ -51,7 +51,7 @@ public abstract class ServerLoginNetworkHandlerMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/c2s/login/LoginHelloC2SPacket;getProfile()Lcom/mojang/authlib/GameProfile;"),
             cancellable = true)
     private void sendVelocityPacket(LoginHelloC2SPacket loginHelloC2SPacket, CallbackInfo ci) {
-        if (FabricProxy.config.getVelocity() && !bypassProxy) {
+        if (FabricProxy.config.getVelocity() && !bypassProxyVelocity) {
             if (FabricProxy.config.getAllowBypassProxy()) {
                 loginPacket = loginHelloC2SPacket;
             }
@@ -76,7 +76,7 @@ public abstract class ServerLoginNetworkHandlerMixin {
                     return;
                 }
 
-                bypassProxy = true;
+                bypassProxyVelocity = true;
                 onHello(loginPacket);
                 ci.cancel();
                 return;

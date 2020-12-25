@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerLoginNetworkHandler.class)
 public abstract class ServerLoginNetworkHandlerMixin {
-    private boolean bypassProxy = false;
+    private boolean bypassProxyBungee = false;
     @Shadow
     @Final
     public ClientConnection connection;
@@ -29,7 +29,7 @@ public abstract class ServerLoginNetworkHandlerMixin {
     private void initUuid(CallbackInfo ci) {
         if (FabricProxy.config.getBungeeCord()) {
             if (((BungeeClientConnection) connection).getSpoofedUUID() == null) {
-                bypassProxy = true;
+                bypassProxyBungee = true;
                 return;
             }
 
@@ -45,6 +45,6 @@ public abstract class ServerLoginNetworkHandlerMixin {
 
     @Redirect(method = "onHello", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isOnlineMode()Z"))
     private boolean skipKeyPacket(MinecraftServer minecraftServer) {
-        return (bypassProxy || !FabricProxy.config.getBungeeCord()) && minecraftServer.isOnlineMode();
+        return (bypassProxyBungee || !FabricProxy.config.getBungeeCord()) && minecraftServer.isOnlineMode();
     }
 }
