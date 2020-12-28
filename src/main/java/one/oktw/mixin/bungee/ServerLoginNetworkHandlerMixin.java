@@ -50,7 +50,9 @@ public abstract class ServerLoginNetworkHandlerMixin {
     
     @Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;acceptPlayer()V"), cancellable = true)
     private void overwriteAcceptPlayer(CallbackInfo ci) {
-        ((ServerLoginNetworkHandler) (Object) this).acceptPlayer();
-        ci.cancel();
+    	if(FabricProxy.config.getBungeeCordWorkaround()) {
+	        ((ServerLoginNetworkHandler) (Object) this).acceptPlayer();
+	        ci.cancel();
+    	}
     }
 }
