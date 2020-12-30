@@ -8,7 +8,7 @@ import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Comment;
 @Config(name = "FabricProxy")
 public class ModConfig implements ConfigData {
     private Boolean BungeeCord = false;
-    private Boolean BungeeCordWorkaround = false;
+    private Boolean BungeeCordWorkaround = true;
     private Boolean Velocity = false;
     private Boolean allowBypassProxy = false;
 
