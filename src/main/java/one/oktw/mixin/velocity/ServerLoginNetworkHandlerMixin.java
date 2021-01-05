@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
@@ -38,9 +39,6 @@ public abstract class ServerLoginNetworkHandlerMixin {
     private GameProfile profile;
 
     @Shadow
-    public abstract void acceptPlayer();
-
-    @Shadow
     public abstract void disconnect(Text text);
 
     @Shadow
@@ -51,7 +49,7 @@ public abstract class ServerLoginNetworkHandlerMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/c2s/login/LoginHelloC2SPacket;getProfile()Lcom/mojang/authlib/GameProfile;"),
             cancellable = true)
     private void sendVelocityPacket(LoginHelloC2SPacket loginHelloC2SPacket, CallbackInfo ci) {
-        if (FabricProxy.config.getVelocity() && !bypassProxyVelocity) {
+        if (!bypassProxyVelocity && !ready) {
             if (FabricProxy.config.getAllowBypassProxy()) {
                 loginPacket = loginHelloC2SPacket;
             }
@@ -64,6 +62,11 @@ public abstract class ServerLoginNetworkHandlerMixin {
             connection.send(packet);
             ci.cancel();
         }
+    }
+
+    @Redirect(method = "onHello", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;isLocal()Z"))
+    private boolean skipAuth(ClientConnection connection) {
+        return !bypassProxyVelocity;
     }
 
     @Inject(method = "onQueryResponse", at = @At("HEAD"), cancellable = true)
@@ -92,15 +95,8 @@ public abstract class ServerLoginNetworkHandlerMixin {
             profile = VelocityLib.createProfile(buf);
 
             ready = true;
+            onHello(new LoginHelloC2SPacket(profile));
             ci.cancel();
-        }
-    }
-
-    @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;loginTicks:I"))
-    private void login(CallbackInfo ci) {
-        if (ready) {
-            ready = false;
-            acceptPlayer();
         }
     }
 }
