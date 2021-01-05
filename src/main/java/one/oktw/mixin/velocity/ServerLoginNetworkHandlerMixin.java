@@ -13,16 +13,19 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import one.oktw.FabricProxy;
 import one.oktw.VelocityLib;
+import one.oktw.interfaces.BungeeClientConnection;
 import one.oktw.mixin.ClientConnectionAccessor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
+import static one.oktw.FabricProxy.config;
 
 @Mixin(ServerLoginNetworkHandler.class)
 public abstract class ServerLoginNetworkHandlerMixin {
@@ -30,6 +33,9 @@ public abstract class ServerLoginNetworkHandlerMixin {
     private boolean ready = false;
     private boolean bypassProxyVelocity = false;
     private LoginHelloC2SPacket loginPacket;
+
+    @Unique
+    private final boolean bypassProxyBungee = false;
 
     @Shadow
     @Final
@@ -49,6 +55,11 @@ public abstract class ServerLoginNetworkHandlerMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/c2s/login/LoginHelloC2SPacket;getProfile()Lcom/mojang/authlib/GameProfile;"),
             cancellable = true)
     private void sendVelocityPacket(LoginHelloC2SPacket loginHelloC2SPacket, CallbackInfo ci) {
+        // Bypass BungeeCord connection
+        if (config.getBungeeCord() && ((BungeeClientConnection) connection).getSpoofedUUID() != null) {
+            bypassProxyVelocity = true;
+        }
+
         if (!bypassProxyVelocity && !ready) {
             if (FabricProxy.config.getAllowBypassProxy()) {
                 loginPacket = loginHelloC2SPacket;
