@@ -18,7 +18,6 @@ import one.oktw.mixin.ClientConnectionAccessor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -27,15 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
 import static one.oktw.FabricProxy.config;
 
-@Mixin(ServerLoginNetworkHandler.class)
+@Mixin(value = ServerLoginNetworkHandler.class, priority = 1001)
 public abstract class ServerLoginNetworkHandlerMixin {
     private int velocityLoginQueryId = -1;
     private boolean ready = false;
     private boolean bypassProxyVelocity = false;
     private LoginHelloC2SPacket loginPacket;
-
-    @Unique
-    private final boolean bypassProxyBungee = false;
 
     @Shadow
     @Final
