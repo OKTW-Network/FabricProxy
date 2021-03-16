@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'fabric-loom' version '0.6-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -12,6 +12,7 @@ group = project.maven_group
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 minecraft {
@@ -23,11 +24,11 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
 
 	modApi "net.fabricmc:fabric-loader:${project.loader_version}"
-	modApi "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
+	modApi "com.github.shedaniel:AutoConfig:1.16-SNAPSHOT"
 
 	// API
 	modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
+	include "com.github.shedaniel:AutoConfig:1.16-SNAPSHOT"
 }
 
 processResources {
