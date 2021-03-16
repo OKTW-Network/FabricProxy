@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "ClientConnectionAccessor",
-    "ServerConfigHandlerMixin"
+    "ServerConfigHandlerMixin",
+    "UserCacheMixin"
   ],
   "injectors": {
     "defaultRequire": 1
