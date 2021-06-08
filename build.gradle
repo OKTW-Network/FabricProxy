@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.6-SNAPSHOT'
+	id 'fabric-loom' version '0.7-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -32,6 +32,7 @@ dependencies {
 }
 
 processResources {
+	duplicatesStrategy DuplicatesStrategy.INCLUDE
 	inputs.property "version", project.version
 
 	from(sourceSets.main.resources.srcDirs) {
