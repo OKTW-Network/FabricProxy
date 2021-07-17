@@ -8,7 +8,6 @@ import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Comment;
 @Config(name = "FabricProxy")
 public class ModConfig implements ConfigData {
     private Boolean BungeeCord = false;
-    private Boolean BungeeCordWorkaround = true;
     private Boolean Velocity = false;
     private Boolean allowBypassProxy = false;
 
@@ -28,15 +27,6 @@ public class ModConfig implements ConfigData {
         String env = System.getenv("FABRIC_PROXY_BUNGEECORD");
         if (env == null) {
             return BungeeCord;
-        } else {
-            return env.equalsIgnoreCase("true");
-        }
-    }
-    
-    public Boolean getBungeeCordWorkaround() {
-        String env = System.getenv("FABRIC_PROXY_BUNGEECORD_WORKAROUND");
-        if (env == null) {
-            return BungeeCordWorkaround;
         } else {
             return env.equalsIgnoreCase("true");
         }
