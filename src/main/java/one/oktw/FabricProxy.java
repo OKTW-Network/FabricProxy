@@ -1,13 +1,17 @@
 package one.oktw;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
+import com.moandjiezana.toml.Toml;
+import com.moandjiezana.toml.TomlWriter;
+import net.fabricmc.loader.api.FabricLoader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Set;
 
@@ -18,8 +22,17 @@ public class FabricProxy implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         if (config == null) {
-            AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
-            config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+            var configFile = FabricLoader.getInstance().getConfigDir().resolve("FabricProxy.toml");
+            if (!Files.exists(configFile)) {
+                config = new ModConfig();
+                try {
+                    new TomlWriter().write(config, configFile.toFile());
+                } catch (IOException e) {
+                    LogManager.getLogger().error("Init config failed.", e);
+                }
+            } else {
+                config = new Toml().read(FabricLoader.getInstance().getConfigDir().resolve("FabricProxy.toml").toFile()).to(ModConfig.class);
+            }
         }
     }
 
